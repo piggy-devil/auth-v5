@@ -6,7 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 
 const Social = () => {
   return (
-    <div className="flex items-center w-full gap-x-2">
+    <div className="flex flex-col gap-y-2 items-center w-full md:gap-x-2 md:flex-row">
       <Button size="lg" className="w-full" variant="outline" onClick={() => {}}>
         <FcGoogle className="h-5 w-5" />
       </Button>
