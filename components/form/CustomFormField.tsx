@@ -30,7 +30,7 @@ interface CustomFormFieldProps {
   name: string;
   label?: string;
   placeholder?: string;
-  disabled?: string;
+  disabled?: boolean;
   fieldType: FormFieldType;
   inputType?: InputType;
 }

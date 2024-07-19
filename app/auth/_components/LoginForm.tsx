@@ -13,8 +13,13 @@ import {
   CustomFormField,
   FormFieldType,
 } from "@/components/form/CustomFormField";
+import { login } from "@/actions/auth/login";
+import { useTransition } from "react";
+import SubmitButton from "@/components/form/SubmitButton";
 
 const LoginForm = () => {
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -24,7 +29,9 @@ const LoginForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    console.log(values);
+    startTransition(() => {
+      login(values);
+    });
   };
 
   return (
@@ -44,6 +51,7 @@ const LoginForm = () => {
               placeholder="john.doe@example.com"
               fieldType={FormFieldType.INPUT}
               inputType="email"
+              disabled={isPending}
             />
             <CustomFormField
               control={form.control}
@@ -52,13 +60,14 @@ const LoginForm = () => {
               placeholder="******"
               fieldType={FormFieldType.INPUT}
               inputType="password"
+              disabled={isPending}
             />
           </div>
           <FormSuccess message="Login Success!" />
           <FormError message="Invalid credentials!" />
-          <Button type="submit" className="w-full">
+          <SubmitButton isLoading={isPending} className="w-full">
             Login
-          </Button>
+          </SubmitButton>
         </form>
       </Form>
     </CardWrapper>
