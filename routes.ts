@@ -1,26 +1,33 @@
+import {
+  HOME_URL,
+  LOGIN_URL,
+  REGISTER_URL,
+  AUTH_API_URL,
+  AUTH_ERROR_URL,
+} from "./lib/config";
+
 /**
  * An array of routes that are accessible to the public
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes: string[] = ["/"];
+export const publicRoutes: string[] = [HOME_URL];
 
 /**
  * An array of routes that are accessible to the public
  * These routes will redirect logged in users to /settings
  * @type {string[]}
  */
-export const authRoutes: string[] = ["/auth/login", "/auth/register"];
+export const authRoutes: string[] = [LOGIN_URL, REGISTER_URL, AUTH_ERROR_URL];
 
 /**
  * The prefix for API authentication routes
  * Routes that start with this prefix are used for API authentication purposes
  * @type {string}
  */
-export const apiAuthPrefix: string = "/api/auth";
+export const apiAuthPrefix: string = AUTH_API_URL;
 
 /**
  * The default redirect path after login
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT: string = "/settings";

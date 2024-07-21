@@ -1,5 +1,6 @@
 "use client";
 
+import { LOGIN_URL } from "@/lib/config";
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
@@ -13,7 +14,7 @@ export const LoginButton = ({ children, mode, asChild }: LoginButtonProps) => {
   const router = useRouter();
 
   const onClick = () => {
-    router.push("/auth/login");
+    router.push(`${LOGIN_URL}`);
   };
 
   if (mode === "modal") {

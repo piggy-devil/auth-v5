@@ -1,7 +1,7 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import CardWrapper from "./CardWrapper";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { RegisterSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,9 +13,10 @@ import {
   FormFieldType,
 } from "@/components/form/CustomFormField";
 import { useTransition } from "react";
+import { register } from "@/actions/auth/register";
+import { LOGIN_URL } from "@/lib/config";
 import SubmitButton from "@/components/form/SubmitButton";
 import useStatus from "@/hooks/useStatus";
-import { register } from "@/actions/auth/register";
 
 const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
@@ -44,7 +45,7 @@ const RegisterForm = () => {
     <CardWrapper
       headerLabel="Create an account"
       backButtonLabel="Already have an account?"
-      backButtonHref="/auth/login"
+      backButtonHref={LOGIN_URL}
       showSocial
     >
       <Form {...form}>
@@ -62,7 +63,7 @@ const RegisterForm = () => {
             <CustomFormField
               control={form.control}
               name="email"
-              label="Email1"
+              label="Email"
               placeholder="john.doe@example.com"
               fieldType={FormFieldType.INPUT}
               inputType="email"

@@ -16,8 +16,16 @@ import { login } from "@/actions/auth/login";
 import { useTransition } from "react";
 import SubmitButton from "@/components/form/SubmitButton";
 import useStatus from "@/hooks/useStatus";
+import { useSearchParams } from "next/navigation";
+import { REGISTER_URL } from "@/lib/config";
 
 const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email already in use with different provider!"
+      : "";
+
   const [isPending, startTransition] = useTransition();
   const { error, setError, success, setSuccess, clearStatus } = useStatus();
 
@@ -33,7 +41,7 @@ const LoginForm = () => {
     clearStatus();
     startTransition(() => {
       login(values).then((data) => {
-        setError(data.error);
+        setError(data?.error);
         setSuccess(data.success);
       });
     });
@@ -43,7 +51,7 @@ const LoginForm = () => {
     <CardWrapper
       headerLabel="Welcome back"
       backButtonLabel="Don't have an account?"
-      backButtonHref="/auth/register"
+      backButtonHref={REGISTER_URL}
       showSocial
     >
       <Form {...form}>
@@ -68,7 +76,7 @@ const LoginForm = () => {
               disabled={isPending}
             />
           </div>
-          <FormError message={error} />
+          <FormError message={error || urlError} />
           <FormSuccess message={success} />
           <SubmitButton isLoading={isPending} className="w-full">
             Login
