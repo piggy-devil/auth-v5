@@ -1,7 +1,14 @@
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
-import { APPNAME, HOST, MAIL_PASSWORD, MAIL_USER, NODE_ENV } from "./config";
+import {
+  APPNAME,
+  AUTH_NEW_VERIFICATION,
+  HOST,
+  MAIL_PASSWORD,
+  MAIL_USER,
+  NODE_ENV,
+} from "./config";
 
 const transport = nodemailer.createTransport({
   service: "gmail",
@@ -31,7 +38,7 @@ export const sendEmail = async (props: SendEmailProps) => {
 };
 
 export const sendVerificationEmail = async (email: string, token: string) => {
-  const confirmLink = `${HOST}/auth/new-verification?token=${token}`;
+  const confirmLink = `${HOST}${AUTH_NEW_VERIFICATION}?token=${token}`;
 
   await transport.sendMail({
     from: {

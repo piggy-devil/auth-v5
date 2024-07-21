@@ -4,6 +4,7 @@ import {
   REGISTER_URL,
   AUTH_API_URL,
   AUTH_ERROR_URL,
+  AUTH_NEW_VERIFICATION,
 } from "./lib/config";
 
 /**
@@ -11,7 +12,7 @@ import {
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes: string[] = [HOME_URL];
+export const publicRoutes: string[] = [HOME_URL, AUTH_NEW_VERIFICATION];
 
 /**
  * An array of routes that are accessible to the public

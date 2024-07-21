@@ -60,7 +60,7 @@ const LoginForm = () => {
             <CustomFormField
               control={form.control}
               name="email"
-              label="Email1"
+              label="Email"
               placeholder="john.doe@example.com"
               fieldType={FormFieldType.INPUT}
               inputType="email"
