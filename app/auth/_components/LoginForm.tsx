@@ -13,7 +13,7 @@ import {
   FormFieldType,
 } from "@/components/form/CustomFormField";
 import { login } from "@/actions/auth/login";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { SubmitButton } from "@/components/form/SubmitButton";
 import { useStatus } from "@/hooks/useStatus";
 import { useSearchParams } from "next/navigation";
@@ -27,6 +27,7 @@ const LoginForm = () => {
       ? "Email already in use with different provider!"
       : "";
 
+  const [showTwoFactor, setShowTwoFactor] = useState(false);
   const [isPending, startTransition] = useTransition();
   const { error, setError, success, setSuccess, clearStatus } = useStatus();
 
@@ -35,16 +36,30 @@ const LoginForm = () => {
     defaultValues: {
       email: "",
       password: "",
+      code: "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     clearStatus();
     startTransition(() => {
-      login(values).then((data) => {
-        setError(data?.error);
-        setSuccess(data?.success);
-      });
+      login(values)
+        .then((data) => {
+          if (data?.error) {
+            form.reset();
+            setError(data?.error);
+          }
+
+          if (data?.success) {
+            form.reset();
+            setSuccess(data?.success);
+          }
+
+          if (data?.twoFactor) {
+            setShowTwoFactor(true);
+          }
+        })
+        .catch(() => setError("Something went wrong"));
     });
   };
 
@@ -58,30 +73,45 @@ const LoginForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
-            <CustomFormField
-              control={form.control}
-              name="email"
-              label="Email"
-              placeholder="john.doe@example.com"
-              fieldType={FormFieldType.INPUT}
-              inputType="email"
-              disabled={isPending}
-            />
-            <CustomFormField
-              control={form.control}
-              name="password"
-              label="Password"
-              placeholder="******"
-              fieldType={FormFieldType.INPUT}
-              inputType="password"
-              disabled={isPending}
-            />
-            <ForgotButton>Forgot password?</ForgotButton>
+            {showTwoFactor && (
+              <CustomFormField
+                control={form.control}
+                name="code"
+                label="Two Factor Code"
+                placeholder="123456"
+                fieldType={FormFieldType.INPUT}
+                inputType="text"
+                disabled={isPending}
+              />
+            )}
+            {!showTwoFactor && (
+              <>
+                <CustomFormField
+                  control={form.control}
+                  name="email"
+                  label="Email"
+                  placeholder="john.doe@example.com"
+                  fieldType={FormFieldType.INPUT}
+                  inputType="email"
+                  disabled={isPending}
+                />
+                <CustomFormField
+                  control={form.control}
+                  name="password"
+                  label="Password"
+                  placeholder="******"
+                  fieldType={FormFieldType.INPUT}
+                  inputType="password"
+                  disabled={isPending}
+                />
+                <ForgotButton>Forgot password?</ForgotButton>
+              </>
+            )}
           </div>
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
           <SubmitButton isLoading={isPending} className="w-full">
-            Login
+            {showTwoFactor ? "Confirm" : "Login"}
           </SubmitButton>
         </form>
       </Form>
