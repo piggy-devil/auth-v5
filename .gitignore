@@ -36,4 +36,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/prisma/*.db
+# Ignore prisma dev database file
+/prisma/dev.db

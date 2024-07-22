@@ -2,8 +2,8 @@
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import CardWrapper from "./CardWrapper";
-import { NewPasswordSchema } from "@/schemas";
+import { CardWrapper } from "./CardWrapper";
+import { NewPasswordSchema, PasswordSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { FormError } from "@/components/form/FormError";
@@ -12,9 +12,9 @@ import {
   CustomFormField,
   FormFieldType,
 } from "@/components/form/CustomFormField";
-import { useTransition } from "react";
-import SubmitButton from "@/components/form/SubmitButton";
-import useStatus from "@/hooks/useStatus";
+import { useEffect, useState, useTransition } from "react";
+import { SubmitButton } from "@/components/form/SubmitButton";
+import { useStatus } from "@/hooks/useStatus";
 import { LOGIN_URL } from "@/lib/config";
 import { newPassword } from "@/actions/auth/reset";
 import { useSearchParams } from "next/navigation";
@@ -26,12 +26,28 @@ export const NewPasswordForm = () => {
   const [isPending, startTransition] = useTransition();
   const { error, setError, success, setSuccess, clearStatus } = useStatus();
 
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+
   const form = useForm<z.infer<typeof NewPasswordSchema>>({
     resolver: zodResolver(NewPasswordSchema),
     defaultValues: {
       password: "",
+      confirmPassword: "",
     },
   });
+
+  useEffect(() => {
+    const subscription = form.watch((values) => {
+      const password = values.password;
+      try {
+        PasswordSchema.parse(password);
+        setIsPasswordValid(true);
+      } catch (e) {
+        setIsPasswordValid(false);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
     clearStatus();
@@ -39,6 +55,10 @@ export const NewPasswordForm = () => {
       newPassword(values, token).then((data) => {
         setError(data?.error);
         setSuccess(data?.success);
+
+        if (data.success) {
+          form.reset();
+        }
       });
     });
   };
@@ -60,6 +80,15 @@ export const NewPasswordForm = () => {
               fieldType={FormFieldType.INPUT}
               inputType="password"
               disabled={isPending}
+            />
+            <CustomFormField
+              control={form.control}
+              name="confirmPassword"
+              label="Confirm Password"
+              placeholder="******"
+              fieldType={FormFieldType.INPUT}
+              inputType="password"
+              disabled={!isPasswordValid || isPending}
             />
           </div>
           <FormError message={error} />

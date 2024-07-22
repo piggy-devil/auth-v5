@@ -1,8 +1,8 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import CardWrapper from "./CardWrapper";
 import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { CardWrapper } from "./CardWrapper";
 import { ResetSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -13,8 +13,8 @@ import {
   FormFieldType,
 } from "@/components/form/CustomFormField";
 import { useTransition } from "react";
-import SubmitButton from "@/components/form/SubmitButton";
-import useStatus from "@/hooks/useStatus";
+import { SubmitButton } from "@/components/form/SubmitButton";
+import { useStatus } from "@/hooks/useStatus";
 import { LOGIN_URL } from "@/lib/config";
 import { reset } from "@/actions/auth/reset";
 
@@ -35,6 +35,10 @@ const ResetForm = () => {
       reset(values).then((data) => {
         setError(data?.error);
         setSuccess(data?.success);
+
+        if (data.success) {
+          form.reset();
+        }
       });
     });
   };

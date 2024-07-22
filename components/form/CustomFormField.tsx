@@ -49,6 +49,7 @@ const RenderInput = ({
           <Input
             {...field}
             placeholder={props.placeholder}
+            disabled={props.disabled}
             type={props.inputType}
           />
         </FormControl>

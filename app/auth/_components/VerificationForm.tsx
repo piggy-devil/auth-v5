@@ -2,10 +2,10 @@
 
 import { LOGIN_URL } from "@/lib/config";
 import { BeatLoader } from "react-spinners";
-import CardWrapper from "./CardWrapper";
+import { CardWrapper } from "./CardWrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect } from "react";
-import useStatus from "@/hooks/useStatus";
+import { useStatus } from "@/hooks/useStatus";
 import { verification } from "@/actions/auth/verification";
 import { FormSuccess } from "@/components/form/FormSuccess";
 import { FormError } from "@/components/form/FormError";

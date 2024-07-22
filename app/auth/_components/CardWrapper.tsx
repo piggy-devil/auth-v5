@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { ReactNode } from "react";
 import { Header } from "./Header";
-import Social from "./Social";
+import { Social } from "./Social";
 import { BackButton } from "./BackButton";
 
 interface CardWrapperProps {
@@ -19,7 +19,7 @@ interface CardWrapperProps {
   showSocial?: boolean;
 }
 
-const CardWrapper = ({
+export const CardWrapper = ({
   children,
   headerLabel,
   backButtonLabel,
@@ -43,5 +43,3 @@ const CardWrapper = ({
     </Card>
   );
 };
-
-export default CardWrapper;

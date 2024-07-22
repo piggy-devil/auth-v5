@@ -1,9 +1,9 @@
 "use client";
 
-import CardWrapper from "./CardWrapper";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { RegisterSchema } from "@/schemas";
+import { CardWrapper } from "./CardWrapper";
+import { useForm } from "react-hook-form";
+import { PasswordSchema, RegisterSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { FormError } from "@/components/form/FormError";
@@ -12,24 +12,40 @@ import {
   CustomFormField,
   FormFieldType,
 } from "@/components/form/CustomFormField";
-import { useTransition } from "react";
+import { useTransition, useState, useEffect } from "react";
 import { register } from "@/actions/auth/register";
 import { LOGIN_URL } from "@/lib/config";
-import SubmitButton from "@/components/form/SubmitButton";
-import useStatus from "@/hooks/useStatus";
+import { SubmitButton } from "@/components/form/SubmitButton";
+import { useStatus } from "@/hooks/useStatus";
 
 const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
   const { error, setError, success, setSuccess, clearStatus } = useStatus();
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
       name: "",
     },
   });
+
+  // Check password validity using PasswordSchema
+  useEffect(() => {
+    const subscription = form.watch((values) => {
+      const password = values.password;
+      try {
+        PasswordSchema.parse(password);
+        setIsPasswordValid(true);
+      } catch (e) {
+        setIsPasswordValid(false);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     clearStatus();
@@ -77,6 +93,15 @@ const RegisterForm = () => {
               fieldType={FormFieldType.INPUT}
               inputType="password"
               disabled={isPending}
+            />
+            <CustomFormField
+              control={form.control}
+              name="confirmPassword"
+              label="Confirm Password"
+              placeholder="******"
+              fieldType={FormFieldType.INPUT}
+              inputType="password"
+              disabled={!isPasswordValid || isPending}
             />
           </div>
           <FormError message={error} />

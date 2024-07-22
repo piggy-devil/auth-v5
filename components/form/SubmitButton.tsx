@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Button } from "../ui/button";
+import { ClipLoader } from "react-spinners";
 
 interface ButtonProps {
   children: ReactNode;
@@ -7,14 +8,18 @@ interface ButtonProps {
   className?: string;
 }
 
-const SubmitButton = (props: ButtonProps) => {
+export const SubmitButton = (props: ButtonProps) => {
   const { isLoading, children, className } = props;
 
   return (
     <Button type="submit" disabled={isLoading} className={className}>
-      {isLoading ? <div>Loading...</div> : children}
+      {isLoading ? (
+        <div className="flex items-center justify-center">
+          <ClipLoader size="30px" />
+        </div>
+      ) : (
+        children
+      )}
     </Button>
   );
 };
-
-export default SubmitButton;

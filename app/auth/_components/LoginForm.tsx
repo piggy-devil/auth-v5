@@ -1,8 +1,8 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import CardWrapper from "./CardWrapper";
 import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { CardWrapper } from "./CardWrapper";
 import { LoginSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -14,8 +14,8 @@ import {
 } from "@/components/form/CustomFormField";
 import { login } from "@/actions/auth/login";
 import { useTransition } from "react";
-import SubmitButton from "@/components/form/SubmitButton";
-import useStatus from "@/hooks/useStatus";
+import { SubmitButton } from "@/components/form/SubmitButton";
+import { useStatus } from "@/hooks/useStatus";
 import { useSearchParams } from "next/navigation";
 import { REGISTER_URL } from "@/lib/config";
 import { ForgotButton } from "./ForgotButton";

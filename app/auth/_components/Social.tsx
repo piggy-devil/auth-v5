@@ -6,7 +6,7 @@ import { signIn } from "next-auth/react";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
-const Social = () => {
+export const Social = () => {
   const onClick = (provider: "google" | "github") => {
     signIn(provider, {
       callbackUrl: DEFAULT_LOGIN_REDIRECT,
@@ -34,5 +34,3 @@ const Social = () => {
     </div>
   );
 };
-
-export default Social;
