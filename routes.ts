@@ -6,6 +6,7 @@ import {
   AUTH_ERROR_URL,
   AUTH_NEW_VERIFICATION,
   RESET_URL,
+  AUTH_NEW_PASSWORD,
 } from "./lib/config";
 
 /**
@@ -25,6 +26,7 @@ export const authRoutes: string[] = [
   REGISTER_URL,
   AUTH_ERROR_URL,
   RESET_URL,
+  AUTH_NEW_PASSWORD,
 ];
 
 /**
