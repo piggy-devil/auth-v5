@@ -5,6 +5,7 @@ import {
   AUTH_API_URL,
   AUTH_ERROR_URL,
   AUTH_NEW_VERIFICATION,
+  RESET_URL,
 } from "./lib/config";
 
 /**
@@ -19,7 +20,12 @@ export const publicRoutes: string[] = [HOME_URL, AUTH_NEW_VERIFICATION];
  * These routes will redirect logged in users to /settings
  * @type {string[]}
  */
-export const authRoutes: string[] = [LOGIN_URL, REGISTER_URL, AUTH_ERROR_URL];
+export const authRoutes: string[] = [
+  LOGIN_URL,
+  REGISTER_URL,
+  AUTH_ERROR_URL,
+  RESET_URL,
+];
 
 /**
  * The prefix for API authentication routes

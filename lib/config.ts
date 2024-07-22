@@ -1,8 +1,10 @@
 export const HOME_URL = "/";
 export const REGISTER_URL = "/auth/register";
 export const LOGIN_URL = "/auth/login";
+export const RESET_URL = "/auth/reset";
 export const AUTH_ERROR_URL = "/auth/error";
 export const AUTH_NEW_VERIFICATION = "/auth/new-verification";
+export const AUTH_NEW_PASSWORD = "/auth/new-password";
 export const AUTH_API_URL = "/api/auth";
 export const DEFAULT_LOGIN_REDIRECT: string = "/settings";
 
