@@ -1,7 +1,8 @@
 "use server";
 
-import { z } from "zod";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
+import { db } from "@/lib/db";
 import { NewPasswordSchema, ResetSchema } from "@/schemas";
 import { getUserByEmail } from "../users/user";
 import {
@@ -9,7 +10,6 @@ import {
   getPasswordResetTokenByToken,
 } from "@/lib/tokens";
 import { sendPasswordResetEmail } from "@/lib/mail";
-import { db } from "@/lib/db";
 
 export const reset = async (values: z.infer<typeof ResetSchema>) => {
   const validatedFields = ResetSchema.safeParse(values);
@@ -24,6 +24,20 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
 
   if (!existingUser) {
     return { error: "Email not found!" };
+  }
+
+  // Check user provider Not Allow Reset in application
+  const isProvider = await db.account.findFirst({
+    where: {
+      userId: existingUser.id,
+    },
+    select: {
+      provider: true,
+    },
+  });
+
+  if (isProvider) {
+    return { error: "Email is register with provider" };
   }
 
   const passwordResetToken = await generatePasswordResetToken(email);
