@@ -28,6 +28,7 @@ const LoginForm = () => {
       : "";
 
   const [showTwoFactor, setShowTwoFactor] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPending, startTransition] = useTransition();
   const { error, setError, success, setSuccess, clearStatus } = useStatus();
 
@@ -42,6 +43,7 @@ const LoginForm = () => {
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     clearStatus();
+    setIsSubmitting(true); // Start submitting
     startTransition(() => {
       login(values)
         .then((data) => {
@@ -59,16 +61,23 @@ const LoginForm = () => {
             setShowTwoFactor(true);
           }
         })
-        .catch(() => setError("Something went wrong"));
+        .catch(() => setError("Something went wrong"))
+        .finally(() => setIsSubmitting(false)); // End submitting
     });
   };
+
+  const emailValue = form.watch("email");
+  const passwordValue = form.watch("password");
+  const isOTPValid = form.watch("code")?.length === 6;
+  const isFormValid = emailValue?.length > 0 && passwordValue?.length > 5;
 
   return (
     <CardWrapper
       headerLabel="Welcome back"
       backButtonLabel="Don't have an account?"
       backButtonHref={REGISTER_URL}
-      showSocial
+      showSocial={!showTwoFactor}
+      disabled={isPending}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -77,10 +86,8 @@ const LoginForm = () => {
               <CustomFormField
                 control={form.control}
                 name="code"
-                label="Two Factor Code"
-                placeholder="123456"
-                fieldType={FormFieldType.INPUT}
-                inputType="text"
+                label="Please enter the one-time password sent to your email."
+                fieldType={FormFieldType.InputOTP}
                 disabled={isPending}
               />
             )}
@@ -104,13 +111,19 @@ const LoginForm = () => {
                   inputType="password"
                   disabled={isPending}
                 />
-                <ForgotButton>Forgot password?</ForgotButton>
+                <ForgotButton disabled={isPending}>
+                  Forgot password?
+                </ForgotButton>
               </>
             )}
           </div>
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
-          <SubmitButton isLoading={isPending} className="w-full">
+          <SubmitButton
+            isLoading={(!isOTPValid && showTwoFactor) || !isFormValid}
+            isSubmitting={isSubmitting}
+            className="w-full"
+          >
             {showTwoFactor ? "Confirm" : "Login"}
           </SubmitButton>
         </form>

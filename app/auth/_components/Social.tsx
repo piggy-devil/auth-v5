@@ -6,7 +6,11 @@ import { signIn } from "next-auth/react";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
-export const Social = () => {
+type SocialProp = {
+  isLoading?: boolean;
+};
+
+export const Social = ({ isLoading }: SocialProp) => {
   const onClick = (provider: "google" | "github") => {
     signIn(provider, {
       callbackUrl: DEFAULT_LOGIN_REDIRECT,
@@ -20,6 +24,7 @@ export const Social = () => {
         className="w-full"
         variant="outline"
         onClick={() => onClick("google")}
+        disabled={isLoading}
       >
         <FcGoogle className="h-5 w-5" />
       </Button>
@@ -28,6 +33,7 @@ export const Social = () => {
         className="w-full"
         variant="outline"
         onClick={() => onClick("github")}
+        disabled={isLoading}
       >
         <FaGithub className="h-5 w-5" />
       </Button>

@@ -57,12 +57,19 @@ const RegisterForm = () => {
     });
   };
 
+  const nameValue = form.watch("name");
+  const emailValue = form.watch("email");
+  const passwordValue = form.watch("password");
+  const isFormValid =
+    nameValue.length > 0 && emailValue.length > 0 && passwordValue.length > 5;
+
   return (
     <CardWrapper
       headerLabel="Create an account"
       backButtonLabel="Already have an account?"
       backButtonHref={LOGIN_URL}
       showSocial
+      disabled={isPending}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -106,7 +113,11 @@ const RegisterForm = () => {
           </div>
           <FormError message={error} />
           <FormSuccess message={success} />
-          <SubmitButton isLoading={isPending} className="w-full">
+          <SubmitButton
+            isLoading={isPending || !isFormValid}
+            isSubmitting={isPending}
+            className="w-full"
+          >
             Create an account
           </SubmitButton>
         </form>

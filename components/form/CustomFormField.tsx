@@ -1,6 +1,7 @@
 import { Control } from "react-hook-form";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -8,9 +9,16 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+
 export enum FormFieldType {
   INPUT = "input",
   CHECKBOX = "checkbox",
+  InputOTP = "inputOTP",
 }
 
 type InputType =
@@ -54,6 +62,23 @@ const RenderInput = ({
           />
         </FormControl>
       );
+    case FormFieldType.InputOTP:
+      return (
+        <>
+          <FormControl>
+            <InputOTP maxLength={6} {...field}>
+              <InputOTPGroup className="w-full justify-center">
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+          </FormControl>
+        </>
+      );
   }
 };
 
@@ -66,10 +91,13 @@ export const CustomFormField = (props: CustomFormFieldProps) => {
       name={name}
       render={({ field }) => (
         <FormItem>
-          {props.fieldType !== FormFieldType.CHECKBOX && label && (
-            <FormLabel>{label}</FormLabel>
-          )}
+          {props.fieldType !== FormFieldType.CHECKBOX &&
+            props.fieldType !== FormFieldType.InputOTP &&
+            label && <FormLabel>{label}</FormLabel>}
           <RenderInput field={field} props={props} />
+          {props.fieldType === FormFieldType.InputOTP && (
+            <FormDescription>{props.label}</FormDescription>
+          )}
           <FormMessage />
         </FormItem>
       )}

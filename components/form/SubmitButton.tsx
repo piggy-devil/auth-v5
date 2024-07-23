@@ -5,15 +5,20 @@ import { ClipLoader } from "react-spinners";
 interface ButtonProps {
   children: ReactNode;
   isLoading?: boolean;
+  isSubmitting?: boolean;
   className?: string;
 }
 
 export const SubmitButton = (props: ButtonProps) => {
-  const { isLoading, children, className } = props;
+  const { isLoading, isSubmitting, children, className } = props;
 
   return (
-    <Button type="submit" disabled={isLoading} className={className}>
-      {isLoading ? (
+    <Button
+      type="submit"
+      disabled={isLoading || isSubmitting}
+      className={className}
+    >
+      {isSubmitting ? (
         <div className="flex items-center justify-center">
           <ClipLoader size="30px" />
         </div>
