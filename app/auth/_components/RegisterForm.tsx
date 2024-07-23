@@ -19,9 +19,10 @@ import { SubmitButton } from "@/components/form/SubmitButton";
 import { useStatus } from "@/hooks/useStatus";
 
 const RegisterForm = () => {
-  const [isPending, startTransition] = useTransition();
   const { error, setError, success, setSuccess, clearStatus } = useStatus();
+  const [isPending, startTransition] = useTransition();
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false);
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -37,11 +38,14 @@ const RegisterForm = () => {
   useEffect(() => {
     const subscription = form.watch((values) => {
       const password = values.password;
+      const confirmPassword = values.confirmPassword;
       try {
         PasswordSchema.parse(password);
         setIsPasswordValid(true);
+        setIsConfirmPasswordValid(confirmPassword!.length > 5 ? true : false);
       } catch (e) {
         setIsPasswordValid(false);
+        setIsConfirmPasswordValid(false);
       }
     });
     return () => subscription.unsubscribe();
@@ -59,9 +63,11 @@ const RegisterForm = () => {
 
   const nameValue = form.watch("name");
   const emailValue = form.watch("email");
-  const passwordValue = form.watch("password");
   const isFormValid =
-    nameValue.length > 0 && emailValue.length > 0 && passwordValue.length > 5;
+    nameValue.length > 0 &&
+    emailValue.length > 0 &&
+    isPasswordValid &&
+    isConfirmPasswordValid;
 
   return (
     <CardWrapper
