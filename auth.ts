@@ -8,8 +8,8 @@ import { getTwoFactorConfirmationByUserId } from "./lib/two-factor-token";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   pages: {
-    signIn: `${LOGIN_URL}`,
-    error: `${AUTH_ERROR_URL}`,
+    signIn: LOGIN_URL,
+    error: AUTH_ERROR_URL,
   },
   events: {
     async linkAccount({ user }) {

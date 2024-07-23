@@ -16,7 +16,7 @@ import { login } from "@/actions/auth/login";
 import { useState, useTransition } from "react";
 import { SubmitButton } from "@/components/form/SubmitButton";
 import { useStatus } from "@/hooks/useStatus";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { REGISTER_URL } from "@/lib/config";
 import { ForgotButton } from "./ForgotButton";
 
@@ -31,6 +31,8 @@ const LoginForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPending, startTransition] = useTransition();
   const { error, setError, success, setSuccess, clearStatus } = useStatus();
+
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -55,6 +57,7 @@ const LoginForm = () => {
           if (data?.success) {
             form.reset();
             setSuccess(data?.success);
+            router.refresh();
           }
 
           if (data?.twoFactor) {
