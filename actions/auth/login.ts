@@ -28,8 +28,12 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
   const existingUser = await getUserByEmail(email);
 
-  if (!existingUser || !existingUser.email || !existingUser.password) {
+  if (!existingUser || !existingUser.email) {
     return { error: "Email does not exist!" };
+  }
+
+  if (existingUser.email && !existingUser.password) {
+    return { error: "This email is used with the provider" };
   }
 
   if (!existingUser.emailVerified) {
@@ -93,22 +97,25 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     }
   }
 
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
-    });
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return { error: "Invalid credentials!" };
-        default:
-          return { error: "Something went wrong!" };
-      }
-    }
+  // try {
+  //   await signIn("credentials", {
+  //     redirect: false,
+  //     email,
+  //     password,
+  //     // redirectTo: DEFAULT_LOGIN_REDIRECT,
+  //   });
 
-    throw error;
-  }
+  //   return { success: true };
+  // } catch (error) {
+  //   if (error instanceof AuthError) {
+  //     switch (error.type) {
+  //       case "CredentialsSignin":
+  //         return { error: "Invalid credentials!" };
+  //       default:
+  //         return { error: "Something went wrong!" };
+  //     }
+  //   }
+
+  //   throw error;
+  // }
 };

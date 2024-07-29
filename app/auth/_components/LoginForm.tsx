@@ -19,6 +19,7 @@ import { useStatus } from "@/hooks/useStatus";
 import { useRouter, useSearchParams } from "next/navigation";
 import { REGISTER_URL } from "@/lib/config";
 import { ForgotButton } from "./ForgotButton";
+import { signIn } from "next-auth/react";
 
 const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -46,26 +47,41 @@ const LoginForm = () => {
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     clearStatus();
     setIsSubmitting(true); // Start submitting
-    startTransition(() => {
+    startTransition(async () => {
       login(values)
-        .then((data) => {
+        .then(async (data) => {
           if (data?.error) {
             form.reset();
             setError(data?.error);
           }
-
-          if (data?.success) {
-            form.reset();
-            setSuccess(data?.success);
-            router.refresh();
-          }
-
           if (data?.twoFactor) {
             setShowTwoFactor(true);
           }
+          if (data?.success) {
+            form.reset();
+            setSuccess(data?.success);
+          }
+          if (!data?.error && !data?.success) {
+            const result = await signIn("credentials", {
+              redirect: false,
+              email: values.email,
+              password: values.password,
+            });
+
+            if (result?.url) {
+              setSuccess("Login Success!");
+              router.replace("/settings");
+            }
+            if (result?.error) {
+              form.reset();
+              setError("Invalid credentials!");
+            }
+          }
         })
         .catch(() => setError("Something went wrong"))
-        .finally(() => setIsSubmitting(false)); // End submitting
+        .finally(() => {
+          setIsSubmitting(false);
+        }); // End submitting
     });
   };
 
